@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,10 +17,13 @@ export default function ContactForm() {
         const form = e.currentTarget;
         const formData = new FormData(form);
         // Prefix subject
-        const subject = `[FOOD REVIEW] ${formData.get("subject")}`;
-        formData.set("subject", subject);
+        let subject = formData.get("subject") as string;
+        if (subject && !subject.startsWith("[FOOD REVIEW]")) {
+            subject = `[FOOD REVIEW] ${subject}`;
+            formData.set("subject", subject);
+        }
         // Send to Formspree
-        const res = await fetch("https://formspree.io/f/xwkzqgqv", {
+        const res = await fetch("https://formspree.io/f/xanbvdpl", {
             method: "POST",
             body: formData,
             headers: {
@@ -37,11 +41,8 @@ export default function ContactForm() {
     }
 
     return (
-        <form className="w-full max-w-md mx-auto mt-4 p-4 border rounded-lg bg-card shadow" onSubmit={handleSubmit}>
+        <form className="w-full max-w-md mx-auto mt-4 p-4 border rounded-lg bg-card shadow" action="https://formspree.io/f/xanbvdpl" method="POST" onSubmit={handleSubmit}>
             <h2 className="text-xl font-bold mb-2 text-center">Contact Me</h2>
-            <div className="mb-2">
-                <Input name="name" placeholder="Your Name" required />
-            </div>
             <div className="mb-2">
                 <Input name="email" type="email" placeholder="Your Email" required />
             </div>
