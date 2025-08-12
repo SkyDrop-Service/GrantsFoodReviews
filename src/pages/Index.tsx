@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Star, Clock } from "lucide-react";
 import { Header } from "@/components/Header";
+import ContactForm from "@/components/ContactForm";
 
 const Index = () => {
   const navigate = useNavigate();
 
+  const [showContact, setShowContact] = useState(false);
   return (
     <>
       <Header />
@@ -71,6 +74,10 @@ const Index = () => {
           {/* HD Logo below main cards */}
           <div className="flex flex-col items-center mt-8">
             <img src="/grantFoodReview-Transparent.png" alt="Grant's Food Review Logo" className="h-40 w-auto mb-4 drop-shadow-lg" />
+            <Button variant="secondary" className="mb-4" onClick={() => setShowContact((v) => !v)}>
+              Contact Me
+            </Button>
+            {showContact && <ContactForm />}
           </div>
         </div>
       </div>
