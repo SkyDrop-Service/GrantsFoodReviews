@@ -16,42 +16,62 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
   const { user } = useAuth();
   const [likeCount, setLikeCount] = useState(0);
   const [liked, setLiked] = useState(false);
+  const [likeId, setLikeId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchLikes = async () => {
       // Get like count
-      const { data: countData, error: countError } = await (supabase
-        .from("review_likes" as any)
-        .select("count")
-        .eq("review_id", review.id));
+      const { data: countData, error: countError } = await supabase
+        .from("review_likes")
+        .select("id", { count: "exact", head: true })
+        .eq("review_id", review.id);
       setLikeCount(countData ? countData.length : 0);
 
       // Check if user liked
       if (user) {
-        const { data: userLike, error: userLikeError } = await (supabase
-          .from("review_likes" as any)
+        const { data: userLike, error: userLikeError } = await supabase
+          .from("review_likes")
           .select("id")
           .eq("review_id", review.id)
           .eq("user_id", user.id)
-          .single());
+          .maybeSingle();
         setLiked(!!userLike);
+        setLikeId(userLike?.id ?? null);
       } else {
         setLiked(false);
+        setLikeId(null);
       }
     };
     fetchLikes();
   }, [review.id, user]);
 
-  const handleLike = async () => {
-    if (!user || liked) return;
+  const handleLikeToggle = async () => {
+    if (!user) return;
     setLoading(true);
-    const { error } = await (supabase
-      .from("review_likes" as any)
-      .insert({ review_id: review.id, user_id: user.id }));
-    if (!error) {
-      setLiked(true);
-      setLikeCount((c) => c + 1);
+    if (liked && likeId) {
+      // Unlike: delete the like
+      const { error } = await supabase
+        .from("review_likes")
+        .delete()
+        .eq("id", likeId);
+      if (!error) {
+        setLiked(false);
+        setLikeId(null);
+        setLikeCount((c) => Math.max(0, c - 1));
+      }
+    } else if (!liked) {
+      // Like: insert
+      const { data, error } = await supabase
+        .from("review_likes")
+        .insert({ review_id: review.id, user_id: user.id })
+        .select("id")
+        .single();
+      if (!error && data) {
+        setLiked(true);
+        setLikeId(data.id);
+        setLikeCount((c) => c + 1);
+      }
     }
     setLoading(false);
   };
@@ -110,12 +130,12 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
 
         <div className="flex items-center gap-2 mt-2">
           <button
-            className={`flex items-center gap-1 px-2 py-1 rounded text-sm border ${liked ? "bg-red-100 text-red-600" : "bg-white text-gray-600"}`}
-            onClick={handleLike}
-            disabled={liked || loading || !user}
-            aria-label={liked ? "Liked" : "Like"}
+            className={`flex items-center gap-1 px-2 py-1 rounded text-sm border transition-colors ${liked ? "bg-red-100 text-red-600 border-red-300" : "bg-white text-gray-600 border-gray-300"}`}
+            onClick={handleLikeToggle}
+            disabled={loading || !user}
+            aria-label={liked ? "Unlike" : "Like"}
           >
-            <Heart className={`h-4 w-4 ${liked ? "fill-red-600" : ""}`} />
+            <Heart className={`h-4 w-4 ${liked ? "text-red-600 fill-red-600" : "text-gray-400"}`} />
             {likeCount}
           </button>
           <span className="text-xs text-muted-foreground">{liked ? "You liked this" : "Like this review"}</span>
