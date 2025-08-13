@@ -1,5 +1,6 @@
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { RecenterMap } from '@/components/RecenterMap';
 import 'leaflet/dist/leaflet.css';
 import L, { LatLngExpression } from 'leaflet';
 import { useEffect, useState } from 'react';
@@ -58,6 +59,7 @@ export default function MapView() {
             <Header />
             <div style={{ flex: 1, height: '100%' }}>
                 <MapContainer center={mapCenter} zoom={12} style={{ height: '100vh', width: '100%' }}>
+                    <RecenterMap center={mapCenter as [number, number]} />
                     <TileLayer
                         url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                     />
