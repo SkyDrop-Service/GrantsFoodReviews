@@ -74,9 +74,20 @@ const Index = () => {
           {/* HD Logo below main cards */}
           <div className="flex flex-col items-center mt-8">
             <img src="/grantFoodReview-Transparent.png" alt="Grant's Food Review Logo" className="h-40 w-auto mb-4 drop-shadow-lg" />
-            <Button variant="secondary" className="mb-4" onClick={() => setShowContact((v) => !v)}>
-              Contact Me
-            </Button>
+            <div className="flex gap-4 mb-4">
+              <Button variant="secondary" onClick={() => setShowContact((v) => !v)}>
+                Contact Me
+              </Button>
+              <a
+                href="https://ko-fi.com/gnhen"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-4 py-2 rounded font-semibold text-white"
+                style={{ backgroundColor: '#FF6433' }}
+              >
+                Buy me a Coffee
+              </a>
+            </div>
             {showContact && <ContactForm />}
           </div>
         </div>
