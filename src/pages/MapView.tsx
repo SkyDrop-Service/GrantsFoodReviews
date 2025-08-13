@@ -19,12 +19,29 @@ const DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
+
 // Cincinnati, OH coordinates
 const CINCINNATI: LatLngExpression = [39.1031, -84.5120];
 
 
+
 export default function MapView() {
     const [reviews, setReviews] = useState<FoodReview[]>([]);
+    const [mapCenter, setMapCenter] = useState<LatLngExpression>(CINCINNATI);
+
+    useEffect(() => {
+        // Try to get user's location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    setMapCenter([pos.coords.latitude, pos.coords.longitude]);
+                },
+                () => {
+                    setMapCenter(CINCINNATI); // fallback if denied
+                }
+            );
+        }
+    }, []);
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -40,7 +57,7 @@ export default function MapView() {
         <div className="min-h-screen flex flex-col">
             <Header />
             <div style={{ flex: 1, height: '100%' }}>
-                <MapContainer center={CINCINNATI} zoom={12} style={{ height: '100vh', width: '100%' }}>
+                <MapContainer center={mapCenter} zoom={12} style={{ height: '100vh', width: '100%' }}>
                     <TileLayer
                         url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                     />
