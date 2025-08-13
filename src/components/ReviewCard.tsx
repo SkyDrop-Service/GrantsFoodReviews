@@ -40,7 +40,7 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
       setLikeCount(count ?? 0);
 
       // Check if this user/browser liked
-      const { data: userLike, error: userLikeError } = await supabase
+      const { data: userLike } = await supabase
         .from("review_likes")
         .select("id")
         .eq("review_id", review.id)
