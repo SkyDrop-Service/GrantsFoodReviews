@@ -141,7 +141,10 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
             disabled={loading}
             aria-label={liked ? "Unlike" : "Like"}
           >
-            <Heart className={`h-4 w-4 ${liked ? "text-red-600 fill-red-600" : "text-gray-400"}`} />
+            <Heart
+              className={`h-4 w-4 ${liked ? "text-red-600" : "text-gray-400"}`}
+              fill={liked ? "#dc2626" : "none"}
+            />
             {likeCount}
           </button>
           <span className="text-xs text-muted-foreground">{liked ? "You liked this" : "Like this review"}</span>
