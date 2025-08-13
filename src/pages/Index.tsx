@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
@@ -82,8 +82,8 @@ const Index = () => {
                 href="https://ko-fi.com/gnhen"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 rounded font-semibold text-white"
-                style={{ backgroundColor: '#FF6433' }}
+                className={buttonVariants({ variant: "secondary" }) + " font-semibold"}
+                style={{ backgroundColor: '#FF6433', color: '#fff', border: 'none' }}
               >
                 Buy me a Coffee
               </a>
