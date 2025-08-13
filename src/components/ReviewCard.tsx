@@ -4,6 +4,7 @@ import { StarRating } from "./StarRating";
 import { FoodReview } from "@/types/food-review";
 import { MapPin, DollarSign, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -11,15 +12,25 @@ interface ReviewCardProps {
   review: FoodReview;
 }
 
-
 export const ReviewCard = ({ review }: ReviewCardProps) => {
-  const { user } = useAuth();
+  // Use a persistent UUID for anonymous likes
+  const [userId, setUserId] = useState<string>("");
   const [likeCount, setLikeCount] = useState(0);
   const [liked, setLiked] = useState(false);
   const [likeId, setLikeId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let storedId = localStorage.getItem("foodreview_user_id");
+    if (!storedId) {
+      storedId = uuidv4();
+      localStorage.setItem("foodreview_user_id", storedId);
+    }
+    setUserId(storedId);
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
     const fetchLikes = async () => {
       // Get like count
       const { data: countData, error: countError } = await supabase
@@ -28,26 +39,21 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
         .eq("review_id", review.id);
       setLikeCount(countData ? countData.length : 0);
 
-      // Check if user liked
-      if (user) {
-        const { data: userLike, error: userLikeError } = await supabase
-          .from("review_likes")
-          .select("id")
-          .eq("review_id", review.id)
-          .eq("user_id", user.id)
-          .maybeSingle();
-        setLiked(!!userLike);
-        setLikeId(userLike?.id ?? null);
-      } else {
-        setLiked(false);
-        setLikeId(null);
-      }
+      // Check if this user/browser liked
+      const { data: userLike, error: userLikeError } = await supabase
+        .from("review_likes")
+        .select("id")
+        .eq("review_id", review.id)
+        .eq("user_id", userId)
+        .maybeSingle();
+      setLiked(!!userLike);
+      setLikeId(userLike?.id ?? null);
     };
     fetchLikes();
-  }, [review.id, user]);
+  }, [review.id, userId]);
 
   const handleLikeToggle = async () => {
-    if (!user) return;
+    if (!userId) return;
     setLoading(true);
     if (liked && likeId) {
       // Unlike: delete the like
@@ -64,7 +70,7 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
       // Like: insert
       const { data, error } = await supabase
         .from("review_likes")
-        .insert({ review_id: review.id, user_id: user.id })
+        .insert({ review_id: review.id, user_id: userId })
         .select("id")
         .single();
       if (!error && data) {
@@ -132,7 +138,7 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
           <button
             className={`flex items-center gap-1 px-2 py-1 rounded text-sm border transition-colors ${liked ? "bg-red-100 text-red-600 border-red-300" : "bg-white text-gray-600 border-gray-300"}`}
             onClick={handleLikeToggle}
-            disabled={loading || !user}
+            disabled={loading}
             aria-label={liked ? "Unlike" : "Like"}
           >
             <Heart className={`h-4 w-4 ${liked ? "text-red-600 fill-red-600" : "text-gray-400"}`} />
