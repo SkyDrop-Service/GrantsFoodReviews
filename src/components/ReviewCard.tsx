@@ -33,11 +33,11 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
     if (!userId) return;
     const fetchLikes = async () => {
       // Get like count
-      const { data: countData, error: countError } = await supabase
+      const { data, count, error } = await supabase
         .from("review_likes")
         .select("id", { count: "exact", head: true })
         .eq("review_id", review.id);
-      setLikeCount(countData ? countData.length : 0);
+      setLikeCount(count ?? 0);
 
       // Check if this user/browser liked
       const { data: userLike, error: userLikeError } = await supabase
