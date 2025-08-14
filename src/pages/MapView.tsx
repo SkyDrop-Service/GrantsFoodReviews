@@ -9,7 +9,6 @@ import { FoodReview } from '@/types/food-review';
 import { ReviewCard } from '@/components/ReviewCard';
 import { Header } from '@/components/Header';
 
-// Default icon fix for Leaflet in React
 const DefaultIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
     shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
@@ -21,7 +20,6 @@ const DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 
-// Cincinnati, OH coordinates
 const CINCINNATI: LatLngExpression = [39.1031, -84.5120];
 
 
@@ -31,14 +29,12 @@ export default function MapView() {
     const [mapCenter, setMapCenter] = useState<LatLngExpression>(CINCINNATI);
 
     useEffect(() => {
-        // Try to get user's location
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     setMapCenter([pos.coords.latitude, pos.coords.longitude]);
                 },
                 () => {
-                    setMapCenter(CINCINNATI); // fallback if denied
                 }
             );
         }

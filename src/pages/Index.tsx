@@ -22,11 +22,9 @@ const Index = () => {
             <p className="text-xl text-muted-foreground mb-8">
               Discover amazing food spots through Grant's personal dining experiences
             </p>
-            <div className="mb-6">
-              <span className="inline-block px-4 py-2 rounded-lg bg-red-100 text-red-700 font-semibold text-lg">
-                No Sponsored reviews... ever!
-              </span>
-            </div>
+            <p className="text-xl text-muted-foreground mb-8">
+              No Sponsored reviews... ever!
+            </p>
             <div className="flex gap-4 justify-center">
               <Button onClick={() => navigate("/reviews")} size="lg">
                 View All Reviews
@@ -76,7 +74,6 @@ const Index = () => {
             </Card>
           </div>
 
-          {/* HD Logo below main cards */}
           <div className="flex flex-col items-center mt-8">
             <img src="/grantFoodReview-Transparent.png" alt="Grant's Food Review Logo" className="h-40 w-auto mb-4 drop-shadow-lg" />
             <div className="flex gap-4 mb-4">

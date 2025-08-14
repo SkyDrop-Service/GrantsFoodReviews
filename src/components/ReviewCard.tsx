@@ -13,7 +13,6 @@ interface ReviewCardProps {
 }
 
 export const ReviewCard = ({ review }: ReviewCardProps) => {
-  // Use a persistent UUID for anonymous likes
   const [userId, setUserId] = useState<string>("");
   const [likeCount, setLikeCount] = useState(0);
   const [liked, setLiked] = useState(false);
@@ -32,14 +31,12 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
   useEffect(() => {
     if (!userId) return;
     const fetchLikes = async () => {
-      // Get like count
       const { data, count, error } = await supabase
         .from("review_likes")
         .select("id", { count: "exact", head: true })
         .eq("review_id", review.id);
       setLikeCount(count ?? 0);
 
-      // Check if this user/browser liked
       const { data: userLike } = await supabase
         .from("review_likes")
         .select("id")
@@ -56,7 +53,6 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
     if (!userId) return;
     setLoading(true);
     if (liked && likeId) {
-      // Unlike: delete the like
       const { error } = await supabase
         .from("review_likes")
         .delete()
@@ -67,7 +63,6 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
         setLikeCount((c) => Math.max(0, c - 1));
       }
     } else if (!liked) {
-      // Like: insert
       const { data, error } = await supabase
         .from("review_likes")
         .insert({ review_id: review.id, user_id: userId })
