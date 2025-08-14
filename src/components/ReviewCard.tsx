@@ -84,6 +84,11 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <MapPin className="h-4 w-4" />
           <span>{review.address}</span>
+          {review.cuisine && (
+            <span className="ml-2 px-2 py-1 rounded bg-secondary text-secondary-foreground text-xs font-semibold">
+              {review.cuisine}
+            </span>
+          )}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">

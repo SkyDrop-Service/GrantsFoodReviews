@@ -24,6 +24,7 @@ interface ReviewFormData {
   price_paid: number;
   address: string;
   photo_url?: string;
+  cuisine?: string;
 }
 
 const Admin = () => {
@@ -48,6 +49,7 @@ const Admin = () => {
       price_paid: 0,
       address: "",
       photo_url: "",
+      cuisine: "",
     },
   });
 
@@ -279,6 +281,36 @@ const Admin = () => {
                         </FormItem>
                       )}
                     />
+                    <FormField
+                      control={form.control}
+                      name="cuisine"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Cuisine</FormLabel>
+                          <FormControl>
+                            <select
+                              {...field}
+                              className="block w-full border rounded px-2 py-2 text-sm"
+                            >
+                              <option value="">Select cuisine</option>
+                              <option value="Italian">Italian</option>
+                              <option value="Mexican">Mexican</option>
+                              <option value="Chinese">Chinese</option>
+                              <option value="American">American</option>
+                              <option value="Japanese">Japanese</option>
+                              <option value="Dessert">Dessert</option>
+                              <option value="Coffee">Coffee</option>
+                              <option value="Pizza">Pizza</option>
+                              <option value="Seafood">Seafood</option>
+                              <option value="Steak">Steak</option>
+                              <option value="Alternative">Alternative</option>
+                              <option value="Breakfast">Breakfast</option>
+                            </select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <div className="space-y-4">
                       <FormField
                         control={form.control}
@@ -463,6 +495,7 @@ const Admin = () => {
                             price_paid: review.price_paid,
                             address: review.address,
                             photo_url: review.photo_url || "",
+                            cuisine: review.cuisine || "",
                           });
                           setView('add');
                         }}>

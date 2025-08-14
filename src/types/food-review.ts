@@ -11,14 +11,15 @@ export interface FoodReview {
   photo_url?: string;
   latitude?: number;
   longitude?: number;
+  cuisine?: string;
   created_at: string;
   updated_at: string;
 }
 
-export type SortOption = 
+export type SortOption =
   | 'name'
   | 'food_rating'
-  | 'speed_rating' 
+  | 'speed_rating'
   | 'service_rating'
   | 'price_paid'
   | 'created_at';
