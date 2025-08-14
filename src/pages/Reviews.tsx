@@ -9,7 +9,8 @@ import { Header } from "@/components/Header";
 const Reviews = () => {
   const [sortBy, setSortBy] = useState<SortOption>('created_at');
   const [selectedCuisine, setSelectedCuisine] = useState('');
-  const [selectedPrice, setSelectedPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState(100);
+  const [selectedPrice, setSelectedPrice] = useState(0);
   const { reviews, loading } = useFoodReviews(sortBy);
 
   if (loading) {
@@ -27,17 +28,15 @@ const Reviews = () => {
   const cuisineOptions = [
     'American', 'Mexican', 'Italian', 'Chinese', 'Indian', 'Thai', 'Mediterranean', 'French', 'Japanese', 'Korean', 'Vietnamese', 'Greek', 'BBQ', 'Seafood', 'Pizza', 'Burgers', 'Sandwiches', 'Sushi', 'Desserts', 'Other'
   ];
-  const priceOptions = [
-    { label: '$', value: 1 },
-    { label: '$$', value: 2 },
-    { label: '$$$', value: 3 },
-    { label: '$$$$', value: 4 }
-  ];
+
+  // Find the highest price_paid in reviews
+  const highestPrice = reviews.length > 0 ? Math.max(...reviews.map(r => r.price_paid || 0)) : 100;
+  if (highestPrice !== maxPrice) setMaxPrice(highestPrice);
 
   // Filter reviews
   const filteredReviews = reviews.filter((review) => {
     const cuisineMatch = selectedCuisine ? review.cuisine === selectedCuisine : true;
-    const priceMatch = selectedPrice ? review.price_paid && Math.round(review.price_paid) === Number(selectedPrice) : true;
+    const priceMatch = review.price_paid !== undefined ? review.price_paid <= selectedPrice : true;
     return cuisineMatch && priceMatch;
   });
 
@@ -51,7 +50,7 @@ const Reviews = () => {
             <p className="text-muted-foreground text-center mb-6">
               Discover amazing food spots through Grant's personal dining experiences
             </p>
-            <div className="flex justify-center mb-4 gap-4">
+            <div className="flex flex-col md:flex-row justify-center mb-4 gap-4 items-center">
               <SortControls sortBy={sortBy} onSortChange={setSortBy} />
               <select
                 value={selectedCuisine}
@@ -63,16 +62,18 @@ const Reviews = () => {
                   <option key={cuisine} value={cuisine}>{cuisine}</option>
                 ))}
               </select>
-              <select
-                value={selectedPrice}
-                onChange={e => setSelectedPrice(e.target.value)}
-                className="border rounded px-2 py-1"
-              >
-                <option value="">All Prices</option>
-                {priceOptions.map(option => (
-                  <option key={option.value} value={String(option.value)}>{option.label}</option>
-                ))}
-              </select>
+              <div className="flex flex-col items-center">
+                <label htmlFor="priceRange" className="text-sm mb-1">Max Price: ${selectedPrice}</label>
+                <input
+                  id="priceRange"
+                  type="range"
+                  min={0}
+                  max={maxPrice}
+                  value={selectedPrice}
+                  onChange={e => setSelectedPrice(Number(e.target.value))}
+                  className="w-40"
+                />
+              </div>
             </div>
           </div>
 
