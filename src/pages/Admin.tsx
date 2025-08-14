@@ -305,8 +305,8 @@ const Admin = () => {
                               <option value="Steak">Steak</option>
                               <option value="Alternative">Alternative</option>
                               <option value="Breakfast">Breakfast</option>
-                              <option value="Breakfast">Sancwiches</option>
-                              <option value="Breakfast">Sushi</option>
+                              <option value="Sandwiches">Sandwiches</option>
+                              <option value="Sushi">Sushi</option>
                             </select>
                           </FormControl>
                           <FormMessage />
