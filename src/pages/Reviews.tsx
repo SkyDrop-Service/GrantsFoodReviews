@@ -10,7 +10,7 @@ const Reviews = () => {
   const [sortBy, setSortBy] = useState<SortOption>('created_at');
   const [selectedCuisine, setSelectedCuisine] = useState('');
   const [maxPrice, setMaxPrice] = useState(100);
-  const [selectedPrice, setSelectedPrice] = useState(0);
+  const [selectedPrice, setSelectedPrice] = useState(100);
   const { reviews, loading } = useFoodReviews(sortBy);
 
   if (loading) {
@@ -26,12 +26,30 @@ const Reviews = () => {
 
   // Cuisine and price options
   const cuisineOptions = [
-    'American', 'Mexican', 'Italian', 'Chinese', 'Indian', 'Thai', 'Mediterranean', 'French', 'Japanese', 'Korean', 'Vietnamese', 'Greek', 'BBQ', 'Seafood', 'Pizza', 'Burgers', 'Sandwiches', 'Sushi', 'Desserts', 'Other'
+    'Italian',
+    'Mexican',
+    'Chinese',
+    'American',
+    'Japanese',
+    'Dessert',
+    'Coffee',
+    'Pizza',
+    'Seafood',
+    'Steak',
+    'Alternative',
+    'Breakfast',
+    'Sandwiches',
+    'Sushi',
+    'Thai'
   ];
 
   // Find the highest price_paid in reviews
   const highestPrice = reviews.length > 0 ? Math.max(...reviews.map(r => r.price_paid || 0)) : 100;
-  if (highestPrice !== maxPrice) setMaxPrice(highestPrice);
+  // Update maxPrice and selectedPrice when reviews change
+  if (highestPrice !== maxPrice) {
+    setMaxPrice(highestPrice);
+    setSelectedPrice(highestPrice);
+  }
 
   // Filter reviews
   const filteredReviews = reviews.filter((review) => {
