@@ -8,6 +8,8 @@ import { Header } from "@/components/Header";
 
 const Reviews = () => {
   const [sortBy, setSortBy] = useState<SortOption>('created_at');
+  const [selectedCuisine, setSelectedCuisine] = useState('');
+  const [selectedPrice, setSelectedPrice] = useState('');
   const { reviews, loading } = useFoodReviews(sortBy);
 
   if (loading) {
@@ -21,6 +23,24 @@ const Reviews = () => {
     );
   }
 
+  // Cuisine and price options
+  const cuisineOptions = [
+    'American', 'Mexican', 'Italian', 'Chinese', 'Indian', 'Thai', 'Mediterranean', 'French', 'Japanese', 'Korean', 'Vietnamese', 'Greek', 'BBQ', 'Seafood', 'Pizza', 'Burgers', 'Sandwiches', 'Sushi', 'Desserts', 'Other'
+  ];
+  const priceOptions = [
+    { label: '$', value: 1 },
+    { label: '$$', value: 2 },
+    { label: '$$$', value: 3 },
+    { label: '$$$$', value: 4 }
+  ];
+
+  // Filter reviews
+  const filteredReviews = reviews.filter((review) => {
+    const cuisineMatch = selectedCuisine ? review.cuisine === selectedCuisine : true;
+    const priceMatch = selectedPrice ? review.price_paid && Math.round(review.price_paid) === Number(selectedPrice) : true;
+    return cuisineMatch && priceMatch;
+  });
+
   return (
     <>
       <Header />
@@ -31,18 +51,38 @@ const Reviews = () => {
             <p className="text-muted-foreground text-center mb-6">
               Discover amazing food spots through Grant's personal dining experiences
             </p>
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-4 gap-4">
               <SortControls sortBy={sortBy} onSortChange={setSortBy} />
+              <select
+                value={selectedCuisine}
+                onChange={e => setSelectedCuisine(e.target.value)}
+                className="border rounded px-2 py-1"
+              >
+                <option value="">All Cuisines</option>
+                {cuisineOptions.map(cuisine => (
+                  <option key={cuisine} value={cuisine}>{cuisine}</option>
+                ))}
+              </select>
+              <select
+                value={selectedPrice}
+                onChange={e => setSelectedPrice(e.target.value)}
+                className="border rounded px-2 py-1"
+              >
+                <option value="">All Prices</option>
+                {priceOptions.map(option => (
+                  <option key={option.value} value={String(option.value)}>{option.label}</option>
+                ))}
+              </select>
             </div>
           </div>
 
-          {reviews.length === 0 ? (
+          {filteredReviews.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground text-lg">No reviews yet. Check back soon!</p>
+              <p className="text-muted-foreground text-lg">No reviews match your filters. Try another cuisine or price range!</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {reviews.map((review) => (
+              {filteredReviews.map((review) => (
                 <ReviewCard key={review.id} review={review} />
               ))}
             </div>
