@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/qr",
+      "destination": "/api/track-qr-scan"
+    },
+    {
       "source": "/((?!api/|.*\\..*).*)",
       "destination": "/index.html"
     }
