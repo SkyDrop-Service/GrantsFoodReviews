@@ -8,16 +8,10 @@
     {
       "source": "/qr",
       "destination": "/api/track-qr-scan"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/qr",
-      "dest": "/api/track-qr-scan"
     },
     {
-      "src": "/((?!api/).*)",
-      "dest": "/index.html"
+      "source": "/((?!api/|.*\\..*).*)",
+      "destination": "/index.html"
     }
   ]
 }
