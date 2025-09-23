@@ -27,7 +27,7 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
           <Route path="/map" element={<MapView />} />
-          <Route path="/qr" element={<QrRedirect />} />
+          {/* <Route path="/qr" element={<QrRedirect />} /> */} 
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

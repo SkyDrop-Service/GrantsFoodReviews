@@ -1,3 +1,4 @@
+/*
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
@@ -9,7 +10,7 @@ const QrRedirect = () => {
         // Delay the redirect to allow analytics to capture the page view.
         const redirectTimer = setTimeout(() => {
             navigate('/', { replace: true });
-        }, 500); // 500ms delay should be sufficient
+        }, 500);
 
         return () => clearTimeout(redirectTimer);
     }, [navigate]);
@@ -23,3 +24,4 @@ const QrRedirect = () => {
 };
 
 export default QrRedirect;
+*/
