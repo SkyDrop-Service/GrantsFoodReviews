@@ -1,31 +1,41 @@
 import { createClient } from '@supabase/supabase-js';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error('SUPABASE_URL and SUPABASE_SERVICE_KEY are required.');
-}
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse,
 ) {
-  try {
-    // Insert a record into a 'qr_scans' table
-    const { error } = await supabase
-      .from('qr_scans')
-      .insert({ scanned_at: new Date().toISOString() });
+  console.log('QR scan handler called!');
+  console.log('Environment check:', {
+    hasUrl: !!process.env.SUPABASE_URL,
+    hasKey: !!process.env.SUPABASE_SERVICE_KEY
+  });
 
-    if (error) {
-      console.error('Supabase error:', error);
-      // Still redirect even if logging fails
+  // Always redirect, even if Supabase fails
+  try {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+
+    if (supabaseUrl && supabaseServiceKey) {
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+      
+      const { error } = await supabase
+        .from('qr_scans')
+        .insert({ scanned_at: new Date().toISOString() });
+
+      if (error) {
+        console.error('Supabase error:', error);
+      } else {
+        console.log('Successfully logged QR scan');
+      }
+    } else {
+      console.log('Supabase not configured, skipping DB insert');
     }
   } catch (e) {
     console.error('Handler error:', e);
   }
 
+  // Always redirect regardless of DB success/failure
+  console.log('Redirecting to homepage');
   res.redirect(307, '/');
 }

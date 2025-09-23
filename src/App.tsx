@@ -3,15 +3,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import QrRedirect from "./pages/QrRedirect";
 import { Analytics } from "@vercel/analytics/react";
 import Index from "./pages/Index";
-import Reviews from "./pages/Reviews";
+import { Reviews } from "./pages/Reviews";
 import Admin from "./pages/Admin";
-import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-
 import MapView from "./pages/MapView";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -27,7 +25,6 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
           <Route path="/map" element={<MapView />} />
-          {/* <Route path="/qr" element={<QrRedirect />} /> */} 
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
