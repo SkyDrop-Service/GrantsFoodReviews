@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import Index from "./pages/Index";
-import { Reviews } from "./pages/Reviews";
+import Reviews from "./pages/Reviews";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import MapView from "./pages/MapView";
