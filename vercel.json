@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/track-qr-scan.ts": {
-      "runtime": "@vercel/node@18"
+      "runtime": "@vercel/node"
     }
   },
   "rewrites": [
