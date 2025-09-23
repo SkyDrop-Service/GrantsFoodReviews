@@ -7,13 +7,13 @@ export default async function handler(
 ) {
   console.log('QR scan handler called!');
   console.log('Environment check:', {
-    hasUrl: !!process.env.SUPABASE_URL,
+    hasUrl: !!process.env.VITE_SUPABASE_URL,
     hasKey: !!process.env.SUPABASE_SERVICE_KEY
   });
 
   // Always redirect, even if Supabase fails
   try {
-    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseUrl = process.env.VITE_SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
 
     if (supabaseUrl && supabaseServiceKey) {
