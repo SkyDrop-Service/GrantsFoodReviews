@@ -5,12 +5,14 @@ import { useFoodReviews } from "@/hooks/useFoodReviews";
 import { SortOption } from "@/types/food-review";
 import { Loader2 } from "lucide-react";
 import { Header } from "@/components/Header";
+import { Input } from "@/components/ui/input";
 
 const Reviews = () => {
   const [sortBy, setSortBy] = useState<SortOption>('created_at');
   const [selectedCuisine, setSelectedCuisine] = useState('');
   const [maxPrice, setMaxPrice] = useState(100);
   const [selectedPrice, setSelectedPrice] = useState(100);
+  const [searchTerm, setSearchTerm] = useState("");
   const { reviews, loading } = useFoodReviews(sortBy);
 
   if (loading) {
@@ -55,7 +57,11 @@ const Reviews = () => {
   const filteredReviews = reviews.filter((review) => {
     const cuisineMatch = selectedCuisine ? review.cuisine === selectedCuisine : true;
     const priceMatch = review.price_paid !== undefined ? review.price_paid <= selectedPrice : true;
-    return cuisineMatch && priceMatch;
+    const searchTermLower = searchTerm.toLowerCase();
+    const searchMatch = searchTerm
+      ? review.name.toLowerCase().includes(searchTermLower)
+      : true;
+    return cuisineMatch && priceMatch && searchMatch;
   });
 
   return (
@@ -69,6 +75,12 @@ const Reviews = () => {
               Discover amazing food spots through Grant's personal dining experiences
             </p>
             <div className="flex flex-col md:flex-row justify-center mb-4 gap-4 items-center">
+              <Input
+                placeholder="Search places..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="max-w-xs"
+              />
               <SortControls sortBy={sortBy} onSortChange={setSortBy} />
               <select
                 value={selectedCuisine}
