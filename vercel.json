@@ -1,12 +1,23 @@
 {
+  "functions": {
+    "api/track-qr-scan.ts": {
+      "runtime": "@vercel/node@18"
+    }
+  },
   "rewrites": [
     {
       "source": "/qr",
       "destination": "/api/track-qr-scan"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/qr",
+      "dest": "/api/track-qr-scan"
     },
     {
-      "source": "/((?!api/|.*\\..*).*)",
-      "destination": "/index.html"
+      "src": "/((?!api/).*)",
+      "dest": "/index.html"
     }
   ]
 }
