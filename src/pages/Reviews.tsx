@@ -3,9 +3,10 @@ import { ReviewCard } from "@/components/ReviewCard";
 import { SortControls } from "@/components/SortControls";
 import { useFoodReviews } from "@/hooks/useFoodReviews";
 import { SortOption } from "@/types/food-review";
-import { Loader2 } from "lucide-react";
+import { Loader2, Star } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const Reviews = () => {
   const [sortBy, setSortBy] = useState<SortOption>('created_at');
@@ -13,6 +14,7 @@ const Reviews = () => {
   const [maxPrice, setMaxPrice] = useState(100);
   const [selectedPrice, setSelectedPrice] = useState(100);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showGrantsPicks, setShowGrantsPicks] = useState(false);
   const { reviews, loading } = useFoodReviews(sortBy);
 
   if (loading) {
@@ -61,13 +63,19 @@ const Reviews = () => {
     const searchMatch = searchTerm
       ? review.name.toLowerCase().includes(searchTermLower)
       : true;
-    return cuisineMatch && priceMatch && searchMatch;
+    const grantsPicksMatch = showGrantsPicks ? review.grants_picks === true : true;
+    return cuisineMatch && priceMatch && searchMatch && grantsPicksMatch;
   });
 
   return (
     <>
-      <Header />
-      <div className="min-h-screen bg-background">
+      <Header backgroundColor={showGrantsPicks ? '#FACF91' : '#ffffff'} />
+      <div 
+        className="min-h-screen transition-colors duration-500 ease-in-out"
+        style={{
+          backgroundColor: showGrantsPicks ? '#FFE4BD' : '#ffffff'
+        }}
+      >
         <div className="container mx-auto py-8">
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-4 text-center">Grant's Food Reviews</h1>
@@ -105,6 +113,33 @@ const Reviews = () => {
                 />
               </div>
             </div>
+            
+            {/* Grant's Picks Button */}
+            <div className="flex justify-center mb-6">
+              <Button
+                onClick={() => setShowGrantsPicks(!showGrantsPicks)}
+                variant={showGrantsPicks ? "default" : "outline"}
+                className={`flex items-center gap-2 transition-all duration-300 ${showGrantsPicks ? 'text-white' : 'text-[#E68C00] hover:bg-orange-50'}`}
+                style={{
+                  backgroundColor: showGrantsPicks ? '#E68C00' : 'transparent',
+                  borderColor: '#E68C00',
+                }}
+                onMouseEnter={(e) => {
+                  if (showGrantsPicks) {
+                    e.currentTarget.style.backgroundColor = '#CC7A00';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (showGrantsPicks) {
+                    e.currentTarget.style.backgroundColor = '#E68C00';
+                  }
+                }}
+              >
+                <Star className="h-4 w-4" />
+                Grant's Picks
+              </Button>
+            </div>
+
           </div>
 
           {filteredReviews.length === 0 ? (

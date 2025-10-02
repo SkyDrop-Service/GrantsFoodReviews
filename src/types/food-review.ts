@@ -14,6 +14,7 @@ export interface FoodReview {
   cuisine?: string;
   created_at: string;
   updated_at: string;
+  grants_picks?: boolean;
 }
 
 export type SortOption =

@@ -15,6 +15,10 @@ const mockReviews: FoodReview[] = [
     address: '123 Mockingbird Lane, Fakeville, FS 12345',
     created_at: new Date().toISOString(),
     image_url: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=2070&auto=format&fit=crop',
+    grants_picks: true,
+    food_rating: 5,
+    speed_rating: 4,
+    service_rating: 4,
   },
   {
     id: '2',
@@ -27,6 +31,10 @@ const mockReviews: FoodReview[] = [
     address: '456 Test Street, Devtown, DV 67890',
     created_at: new Date(Date.now() - 86400000).toISOString(),
     image_url: 'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1965&auto=format&fit=crop',
+    grants_picks: false,
+    food_rating: 4,
+    speed_rating: 4,
+    service_rating: 4,
   },
   {
     id: '3',
@@ -39,6 +47,10 @@ const mockReviews: FoodReview[] = [
     address: '789 Placeholder Ave, Codetown, CT 54321',
     created_at: new Date(Date.now() - 172800000).toISOString(),
     image_url: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=1948&auto=format&fit=crop',
+    grants_picks: true,
+    food_rating: 5,
+    speed_rating: 5,
+    service_rating: 5,
   }
 ];
 

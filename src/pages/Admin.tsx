@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { StarRating } from "@/components/StarRating";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { FoodReview } from "@/types/food-review";
 import { useQrScans } from "@/hooks/useQrScans";
+import { Switch } from "@/components/ui/switch";
 
 interface ReviewFormData {
   name: string;
@@ -26,6 +27,7 @@ interface ReviewFormData {
   address: string;
   photo_url?: string;
   cuisine?: string;
+  grants_picks?: boolean;
 }
 
 const Admin = () => {
@@ -52,6 +54,7 @@ const Admin = () => {
       address: "",
       photo_url: "",
       cuisine: "",
+      grants_picks: false,
     },
   });
 
@@ -461,6 +464,31 @@ const Admin = () => {
                               )}
                             />
                           </div>
+                          
+                          {/* Add Grant's Picks toggle */}
+                          <FormField
+                            control={form.control}
+                            name="grants_picks"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                <div className="space-y-0.5">
+                                  <FormLabel className="text-base">
+                                    Grant's Picks
+                                  </FormLabel>
+                                  <FormDescription>
+                                    Mark this review as one of Grant's personal recommendations
+                                  </FormDescription>
+                                </div>
+                                <FormControl>
+                                  <Switch
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+
                           <FormField
                             control={form.control}
                             name="description"
@@ -520,6 +548,7 @@ const Admin = () => {
                                   address: review.address,
                                   photo_url: review.photo_url || "",
                                   cuisine: review.cuisine || "",
+                                  grants_picks: review.grants_picks || false,
                                 });
                                 setView('add');
                               }}>

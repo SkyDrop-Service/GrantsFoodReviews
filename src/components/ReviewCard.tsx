@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "./StarRating";
 import { FoodReview } from "@/types/food-review";
-import { MapPin, DollarSign, Heart } from "lucide-react";
+import { MapPin, DollarSign, Heart, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "@/integrations/supabase/client";
@@ -80,7 +80,14 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
   return (
     <Card className="h-full hover:shadow-lg transition-shadow">
       <CardHeader className="pb-4">
-        <CardTitle className="text-xl">{review.name}</CardTitle>
+        <div className="flex items-center gap-2 mb-2">
+          {review.grants_picks && (
+            <Star 
+              className="h-4 w-4 text-[#E68C00] fill-[#E68C00]" 
+            />
+          )}
+          <CardTitle className="text-xl">{review.name}</CardTitle>
+        </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <MapPin className="h-4 w-4" />
           <span>{review.address}</span>
@@ -91,9 +98,9 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="p-4">
         {review.photo_url && (
-          <div className="aspect-video w-full overflow-hidden rounded-md">
+          <div className="aspect-video w-full overflow-hidden rounded-md mb-4">
             <img
               src={review.photo_url}
               alt={review.name}
@@ -102,12 +109,12 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
           </div>
         )}
 
-        <div>
+        <div className="mb-4">
           <p className="font-medium text-sm text-muted-foreground mb-1">Food Eaten</p>
           <p className="text-sm">{review.food_eaten}</p>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 mb-4">
           <div>
             <p className="font-medium text-xs text-muted-foreground mb-1">Food</p>
             <StarRating rating={review.food_rating} />
@@ -122,19 +129,19 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mb-4">
           <DollarSign className="h-4 w-4 text-primary" />
           <Badge variant="secondary">${review.price_paid}</Badge>
         </div>
 
         {review.description && (
-          <div>
+          <div className="mb-4">
             <p className="font-medium text-sm text-muted-foreground mb-1">Description</p>
             <p className="text-sm">{review.description}</p>
           </div>
         )}
 
-        <div className="flex items-center gap-2 mt-2">
+        <div className="flex items-center gap-2 mb-2">
           <button
             className={`flex items-center gap-1 px-2 py-1 rounded text-sm border transition-colors ${liked ? "bg-red-100 text-red-600 border-red-300" : "bg-white text-gray-600 border-gray-300"}`}
             onClick={handleLikeToggle}
