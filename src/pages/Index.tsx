@@ -13,7 +13,7 @@ const Index = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen" style={{ backgroundColor: '#EDEDED' }}>
         <div className="container mx-auto py-12">
           <div className="text-center mb-12">
             <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">

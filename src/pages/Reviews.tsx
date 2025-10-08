@@ -69,11 +69,11 @@ const Reviews = () => {
 
   return (
     <>
-      <Header backgroundColor={showGrantsPicks ? '#FACF91' : '#ffffff'} />
+      <Header backgroundColor={showGrantsPicks ? '#FACF91' : '#CCCCCC'} />
       <div 
         className="min-h-screen transition-colors duration-500 ease-in-out"
         style={{
-          backgroundColor: showGrantsPicks ? '#FFE4BD' : '#ffffff'
+          backgroundColor: showGrantsPicks ? '#FFE4BD' : '#EDEDED'
         }}
       >
         <div className="container mx-auto py-8">
