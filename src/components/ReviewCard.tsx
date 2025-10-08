@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { openInMaps } from "@/utils/maps";
 
 interface ReviewCardProps {
   review: FoodReview;
@@ -90,7 +91,13 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <MapPin className="h-4 w-4" />
-          <span>{review.address}</span>
+          <span 
+            className="cursor-pointer hover:text-blue-600 hover:underline transition-colors"
+            onClick={() => openInMaps(review.address, review.latitude, review.longitude)}
+            title="Open in maps"
+          >
+            {review.address}
+          </span>
           {review.cuisine && (
             <span className="ml-2 px-2 py-1 rounded bg-secondary text-secondary-foreground text-xs font-semibold">
               {review.cuisine}

@@ -51,6 +51,22 @@ const mockReviews: FoodReview[] = [
     food_rating: 5,
     speed_rating: 5,
     service_rating: 5,
+  },
+  {
+    id: '4',
+    name: 'Silver Spring House',
+    food_eaten: 'Chicken Parmesan',
+    description: 'Yummy Chicken',
+    rating: 5,
+    price_paid: 20,
+    cuisine: 'American',
+    address: '8322 E Kemper Rd, Cincinnati, OH 45249',
+    created_at: new Date(Date.now() - 172800000).toISOString(),
+    image_url: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=1948&auto=format&fit=crop',
+    grants_picks: false,
+    food_rating: 5,
+    speed_rating: 5,
+    service_rating: 5,
   }
 ];
 
