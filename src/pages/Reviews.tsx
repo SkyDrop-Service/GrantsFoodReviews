@@ -3,7 +3,7 @@ import { ReviewCard } from "@/components/ReviewCard";
 import { SortControls } from "@/components/SortControls";
 import { useFoodReviews } from "@/hooks/useFoodReviews";
 import { SortOption } from "@/types/food-review";
-import { Loader2, Star } from "lucide-react";
+import { Loader2, Star, Settings } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ const Reviews = () => {
   const [selectedPrice, setSelectedPrice] = useState(100);
   const [searchTerm, setSearchTerm] = useState("");
   const [showGrantsPicks, setShowGrantsPicks] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const { reviews, loading } = useFoodReviews(sortBy);
 
   if (loading) {
@@ -82,64 +83,103 @@ const Reviews = () => {
             <p className="text-muted-foreground text-center mb-6">
               Discover amazing food spots through Grant's personal dining experiences
             </p>
-            <div className="flex flex-col md:flex-row justify-center mb-4 gap-4 items-center">
-              <Input
-                placeholder="Search places..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="max-w-xs"
-              />
-              <SortControls sortBy={sortBy} onSortChange={setSortBy} />
-              <select
-                value={selectedCuisine}
-                onChange={e => setSelectedCuisine(e.target.value)}
-                className="border rounded px-2 py-1"
-              >
-                <option value="">All Cuisines</option>
-                {cuisineOptions.map(cuisine => (
-                  <option key={cuisine} value={cuisine}>{cuisine}</option>
-                ))}
-              </select>
-              <div className="flex flex-col items-center">
-                <label htmlFor="priceRange" className="text-sm mb-1">Max Price: ${selectedPrice}</label>
-                <input
-                  id="priceRange"
-                  type="range"
-                  min={0}
-                  max={maxPrice}
-                  value={selectedPrice}
-                  onChange={e => setSelectedPrice(Number(e.target.value))}
-                  className="w-40"
-                />
-              </div>
-            </div>
             
-            {/* Grant's Picks Button */}
-            <div className="flex justify-center mb-6">
+            {/* Main Buttons Row */}
+            <div className="flex justify-center gap-4 mb-6">
+              {/* Grant's Picks Button */}
               <Button
                 onClick={() => setShowGrantsPicks(!showGrantsPicks)}
                 variant={showGrantsPicks ? "default" : "outline"}
-                className={`flex items-center gap-2 transition-all duration-300 ${showGrantsPicks ? 'text-white' : 'text-[#E68C00] hover:bg-orange-50'}`}
+                className="flex items-center gap-2 transition-all duration-300"
                 style={{
                   backgroundColor: showGrantsPicks ? '#E68C00' : 'transparent',
                   borderColor: '#E68C00',
+                  color: showGrantsPicks ? '#ffffff' : '#E68C00'
                 }}
                 onMouseEnter={(e) => {
                   if (showGrantsPicks) {
                     e.currentTarget.style.backgroundColor = '#CC7A00';
+                  } else {
+                    e.currentTarget.style.backgroundColor = '#FFF4E6';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (showGrantsPicks) {
                     e.currentTarget.style.backgroundColor = '#E68C00';
+                  } else {
+                    e.currentTarget.style.backgroundColor = 'transparent';
                   }
                 }}
               >
                 <Star className="h-4 w-4" />
                 Grant's Picks
               </Button>
-            </div>
 
+              {/* Filters Button */}
+              <Button
+                onClick={() => setShowFilters(!showFilters)}
+                variant={showFilters ? "default" : "outline"}
+                className="flex items-center gap-2 transition-all duration-300"
+                style={{
+                  backgroundColor: showFilters ? '#2563eb' : 'transparent',
+                  borderColor: '#2563eb',
+                  color: showFilters ? '#ffffff' : '#2563eb'
+                }}
+                onMouseEnter={(e) => {
+                  if (showFilters) {
+                    e.currentTarget.style.backgroundColor = '#1d4ed8';
+                  } else {
+                    e.currentTarget.style.backgroundColor = '#EFF6FF';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (showFilters) {
+                    e.currentTarget.style.backgroundColor = '#2563eb';
+                  } else {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }
+                }}
+              >
+                <Settings className="h-4 w-4" />
+                Filters
+              </Button>
+            </div>
+            
+            {showFilters && (
+              <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 mb-6 border transition-all duration-300">
+                <div className="flex flex-col md:flex-row justify-center gap-4 items-center">
+                  <Input
+                    placeholder="Search places..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="max-w-xs"
+                  />
+                  <SortControls sortBy={sortBy} onSortChange={setSortBy} />
+                  <select
+                    value={selectedCuisine}
+                    onChange={e => setSelectedCuisine(e.target.value)}
+                    className="border rounded px-3 py-2 bg-white"
+                  >
+                    <option value="">All Cuisines</option>
+                    {cuisineOptions.map(cuisine => (
+                      <option key={cuisine} value={cuisine}>{cuisine}</option>
+                    ))}
+                  </select>
+                  <div className="flex flex-col items-center">
+                    <label htmlFor="priceRange" className="text-sm mb-1 font-medium">Max Price: ${selectedPrice}</label>
+                    <input
+                      id="priceRange"
+                      type="range"
+                      min={0}
+                      max={maxPrice}
+                      value={selectedPrice}
+                      onChange={e => setSelectedPrice(Number(e.target.value))}
+                      className="w-40"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {filteredReviews.length === 0 ? (
