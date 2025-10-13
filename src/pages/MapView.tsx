@@ -14,13 +14,42 @@ import "leaflet/dist/leaflet.css";
 // Fix for default markers in react-leaflet
 import L from "leaflet";
 
-let DefaultIcon = L.divIcon({
-  html: `<div style="background-color: #3B82F6; width: 25px; height: 25px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
-  iconSize: [25, 25],
-  iconAnchor: [12, 12],
-});
+// Create different pin icons based on review type
+const createPinIcon = (color: string) => {
+  return L.divIcon({
+    html: `
+      <div style="position: relative;">
+        <div style="
+          width: 0; 
+          height: 0; 
+          border-left: 12px solid transparent; 
+          border-right: 12px solid transparent; 
+          border-top: 20px solid ${color}; 
+          position: relative;
+          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        "></div>
+        <div style="
+          width: 16px; 
+          height: 16px; 
+          background-color: ${color}; 
+          border-radius: 50%; 
+          position: absolute; 
+          top: -18px; 
+          left: -8px;
+          border: 2px solid white;
+        "></div>
+      </div>
+    `,
+    iconSize: [24, 32],
+    iconAnchor: [12, 32],
+    popupAnchor: [0, -32],
+  });
+};
 
-L.Marker.prototype.options.icon = DefaultIcon;
+// Define pin colors
+const awardPinIcon = createPinIcon('#EAB308'); // Yellow for awards
+const grantsPicksPinIcon = createPinIcon('#E68C00'); // Orange for Grant's picks
+const defaultPinIcon = createPinIcon('#3B82F6'); // Blue for regular reviews
 
 const MapView = () => {
   const { reviews, loading } = useFoodReviews();
@@ -34,6 +63,20 @@ const MapView = () => {
 
   // Default center (Cincinnati area)
   const defaultCenter: [number, number] = [39.1031, -84.5120];
+
+  // Function to get the appropriate icon for a review
+  const getReviewIcon = (review: FoodReview) => {
+    // Awards have highest priority
+    if (review.awards && review.awards.length > 0) {
+      return awardPinIcon;
+    }
+    // Grant's picks have second priority
+    if (review.grants_picks) {
+      return grantsPicksPinIcon;
+    }
+    // Default for regular reviews
+    return defaultPinIcon;
+  };
 
   if (loading) {
     return (
@@ -169,6 +212,21 @@ const MapView = () => {
             <p className="text-muted-foreground">
               Click on markers to see detailed reviews
             </p>
+            {/* Legend */}
+            <div className="flex justify-center gap-6 mt-4 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-[#EAB308] rounded-full"></div>
+                <span>Award Winner</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-[#E68C00] rounded-full"></div>
+                <span>Grant's Picks</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-[#3B82F6] rounded-full"></div>
+                <span>Regular Review</span>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
@@ -188,6 +246,7 @@ const MapView = () => {
                     <Marker
                       key={review.id}
                       position={[review.latitude!, review.longitude!]}
+                      icon={getReviewIcon(review)}
                       eventHandlers={{
                         click: () => setSelectedReview(review),
                       }}
@@ -199,6 +258,18 @@ const MapView = () => {
                           {review.food_eaten}
                           <br />
                           Rating: {review.rating}/5
+                          {review.awards && review.awards.length > 0 && (
+                            <>
+                              <br />
+                              🏆 Award Winner
+                            </>
+                          )}
+                          {review.grants_picks && (
+                            <>
+                              <br />
+                              ⭐ Grant's Pick
+                            </>
+                          )}
                         </div>
                       </Popup>
                     </Marker>
