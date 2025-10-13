@@ -77,82 +77,34 @@ const mockReviews: FoodReview[] = [
 export const useFoodReviews = (sortBy: SortOption = 'created_at') => {
   const [reviews, setReviews] = useState<FoodReview[]>([]);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
-
-  const fetchReviews = useCallback(async () => {
-    if (import.meta.env.MODE !== 'production' || !isSupabaseClient(supabase)) {
-      console.log("Development mode: Using mock review data.");
-      setLoading(true);
-      setTimeout(() => {
-        const sortedMocks = [...mockReviews].sort((a, b) => {
-          if (sortBy === 'rating') {
-            return b.rating - a.rating;
-          }
-          if (sortBy === 'price_paid') {
-              return (b.price_paid || 0) - (a.price_paid || 0);
-          }
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        });
-        setReviews(sortedMocks);
-        setLoading(false);
-      }, 500);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      
-      let query = supabase
-        .from('food_reviews')
-        .select('*');
-
-      switch (sortBy) {
-        case 'name':
-          query = query.order('name', { ascending: true });
-          break;
-        case 'rating':
-        case 'food_rating':
-        case 'speed_rating':
-        case 'service_rating':
-          query = query.order(sortBy, { ascending: false });
-          break;
-        case 'price_paid':
-          query = query.order('price_paid', { ascending: true });
-          break;
-        case 'created_at':
-        default:
-          query = query.order('created_at', { ascending: false });
-          break;
-      }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error('Error fetching reviews:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load reviews",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setReviews(data || []);
-    } catch (error) {
-      console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load reviews",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [sortBy, toast]);
 
   useEffect(() => {
-    fetchReviews();
-  }, [fetchReviews]);
+    const fetchReviews = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('food_reviews')
+          .select('*')
+          .order(sortBy, { ascending: sortBy === 'name' });
 
-  return { reviews, loading, refetch: fetchReviews };
+        if (error) throw error;
+
+        // PostgreSQL arrays come as actual arrays, no parsing needed
+        const processedReviews = data?.map(review => ({
+          ...review,
+          awards: review.awards || [] // PostgreSQL array is already an array
+        })) || [];
+
+        setReviews(processedReviews);
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+        setReviews([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [sortBy]);
+
+  return { reviews, loading };
 };
