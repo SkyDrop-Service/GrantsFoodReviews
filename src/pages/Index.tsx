@@ -49,7 +49,7 @@ const Index = () => {
               <Button
                 onClick={() => navigate("/awards")}
                 size="lg"
-                className="text-lg px-8 py-4"
+                className="text-lg px-8 py-4 w-full sm:w-auto"
                 style={{
                   backgroundColor: '#EAB308',
                   borderColor: '#EAB308',
