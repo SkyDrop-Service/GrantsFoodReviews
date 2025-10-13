@@ -19,6 +19,7 @@ const mockReviews: FoodReview[] = [
     food_rating: 5,
     speed_rating: 4,
     service_rating: 4,
+    awards: ['best-pizza'], // Add this
   },
   {
     id: '2',
@@ -35,6 +36,7 @@ const mockReviews: FoodReview[] = [
     food_rating: 4,
     speed_rating: 4,
     service_rating: 4,
+    awards: ['best-burger'], // Add this
   },
   {
     id: '3',
@@ -51,6 +53,7 @@ const mockReviews: FoodReview[] = [
     food_rating: 5,
     speed_rating: 5,
     service_rating: 5,
+    awards: ['best-sushi', 'highest-rated'], // Add this
   },
   {
     id: '4',
@@ -67,6 +70,7 @@ const mockReviews: FoodReview[] = [
     food_rating: 5,
     speed_rating: 5,
     service_rating: 5,
+    awards: ['best-value'], // Add this
   }
 ];
 

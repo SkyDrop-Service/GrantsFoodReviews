@@ -15,6 +15,7 @@ export interface FoodReview {
   created_at: string;
   updated_at: string;
   grants_picks?: boolean;
+  awards?: string[];
 }
 
 export type SortOption =

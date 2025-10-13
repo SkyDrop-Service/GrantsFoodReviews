@@ -10,6 +10,8 @@ import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import MapView from "./pages/MapView";
 import NotFound from "./pages/NotFound";
+import Awards from "@/pages/Awards";
+import AdminAwards from "@/pages/AdminAwards";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +27,8 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
           <Route path="/map" element={<MapView />} />
+          <Route path="/awards" element={<Awards />} />
+          <Route path="/admin/awards" element={<AdminAwards />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

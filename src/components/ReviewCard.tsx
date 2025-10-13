@@ -87,6 +87,9 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
               className="h-4 w-4 text-[#E68C00] fill-[#E68C00]" 
             />
           )}
+          {review.awards && review.awards.length > 0 && (
+            <span className="text-lg">🏆</span>
+          )}
           <CardTitle className="text-xl">{review.name}</CardTitle>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

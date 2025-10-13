@@ -25,13 +25,44 @@ const Index = () => {
             <p className="text-xl text-muted-foreground mb-8">
               No Sponsored reviews... ever!
             </p>
-            <div className="flex gap-4 justify-center">
-              <Button onClick={() => navigate("/reviews")} size="lg">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+              <Button
+                onClick={() => navigate("/reviews")}
+                size="lg"
+                className="text-lg px-8 py-4"
+              >
                 View All Reviews
               </Button>
-              <Button onClick={() => navigate("/map")} variant="outline" size="lg">
+              <Button
+                onClick={() => navigate("/map")}
+                variant="outline"
+                size="lg"
+                className="text-lg px-8 py-4"
+              >
                 <MapPin className="mr-2 h-4 w-4" />
                 Map View
+              </Button>
+            </div>
+            
+            {/* Awards button centered below */}
+            <div className="flex justify-center">
+              <Button
+                onClick={() => navigate("/awards")}
+                size="lg"
+                className="text-lg px-8 py-4"
+                style={{
+                  backgroundColor: '#EAB308',
+                  borderColor: '#EAB308',
+                  color: '#ffffff'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#CA8A04';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#EAB308';
+                }}
+              >
+                🏆 Awards
               </Button>
             </div>
           </div>

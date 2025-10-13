@@ -254,6 +254,22 @@ const Admin = () => {
               </CardContent>
             </Card>
 
+            <Button
+              onClick={() => navigate("/reviews")}
+              size="lg"
+              className="text-lg px-8 py-4"
+            >
+              View All Reviews
+            </Button>
+            <Button
+              onClick={() => navigate("/admin/awards")}
+              variant="outline"
+              size="lg"
+              className="text-lg px-8 py-4"
+            >
+              Edit Awards
+            </Button>
+
             {/* Existing admin content */}
             <div className="min-h-screen flex flex-col items-center justify-center">
               {view === null && (
