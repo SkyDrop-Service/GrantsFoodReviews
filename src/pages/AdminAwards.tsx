@@ -4,44 +4,37 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useFoodReviews } from "@/hooks/useFoodReviews";
+import { useAwards, Award } from "@/hooks/useAwards";
 import { FoodReview } from "@/types/food-review";
 import { Trophy, Plus, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
-interface Award {
-  id: string;
-  title: string;
-  category: string;
+interface AwardWithWinner extends Award {
   currentWinner?: string; // Review ID
 }
 
 const AdminAwards = () => {
   const navigate = useNavigate();
-  const { reviews, loading } = useFoodReviews();
+  const { reviews, loading: reviewsLoading } = useFoodReviews();
+  const { awards: awardTypes, loading: awardsLoading, createAward, deleteAward } = useAwards();
   
-  const [awards, setAwards] = useState<Award[]>([
-    { id: 'best-pizza', title: 'Best Pizza', category: 'Pizza' },
-    { id: 'best-burger', title: 'Best Burger', category: 'American' },
-    { id: 'best-sushi', title: 'Best Sushi', category: 'Sushi' },
-    { id: 'highest-rated', title: 'Highest Rated', category: 'Overall' },
-    { id: 'best-value', title: 'Best Value', category: 'Value' },
-    { id: 'most-expensive', title: 'Most Premium', category: 'Luxury' },
-  ]);
-
+  const [awards, setAwards] = useState<AwardWithWinner[]>([]);
   const [newAwardTitle, setNewAwardTitle] = useState('');
   const [newAwardCategory, setNewAwardCategory] = useState('');
 
-  // Load current awards on mount
+  // Load current award winners when data is available
   useEffect(() => {
-    if (reviews.length > 0) {
-      const updatedAwards = awards.map(award => {
-        const currentWinner = reviews.find(r => r.awards?.includes(award.id));
-        return { ...award, currentWinner: currentWinner?.id };
+    if (awardTypes.length > 0 && reviews.length > 0) {
+      const awardsWithWinners = awardTypes.map(awardType => {
+        const currentWinner = reviews.find(r => r.awards?.includes(awardType.id));
+        return { ...awardType, currentWinner: currentWinner?.id };
       });
-      setAwards(updatedAwards);
+      setAwards(awardsWithWinners);
+    } else if (awardTypes.length > 0) {
+      setAwards(awardTypes.map(awardType => ({ ...awardType, currentWinner: undefined })));
     }
-  }, [reviews]);
+  }, [awardTypes, reviews]);
 
   const handleAwardChange = (awardId: string, reviewId: string) => {
     setAwards(prev => prev.map(award => 
@@ -51,7 +44,7 @@ const AdminAwards = () => {
     ));
   };
 
-  const addNewAward = () => {
+  const addNewAward = async () => {
     if (!newAwardTitle.trim() || !newAwardCategory.trim()) {
       alert('Please enter both title and category for the new award');
       return;
@@ -68,21 +61,26 @@ const AdminAwards = () => {
       return;
     }
 
-    const newAward: Award = {
+    const result = await createAward({
       id: newAwardId,
       title: newAwardTitle.trim(),
-      category: newAwardCategory.trim(),
-      currentWinner: ''
-    };
+      category: newAwardCategory.trim()
+    });
 
-    setAwards(prev => [...prev, newAward]);
-    setNewAwardTitle('');
-    setNewAwardCategory('');
+    if (result.success) {
+      setNewAwardTitle('');
+      setNewAwardCategory('');
+    } else {
+      alert('Error creating award. Please try again.');
+    }
   };
 
-  const removeAward = (awardId: string) => {
+  const removeAward = async (awardId: string) => {
     if (confirm('Are you sure you want to remove this award? This will also remove it from any reviews that currently have it.')) {
-      setAwards(prev => prev.filter(award => award.id !== awardId));
+      const result = await deleteAward(awardId);
+      if (!result.success) {
+        alert('Error removing award. Please try again.');
+      }
     }
   };
 
@@ -110,7 +108,7 @@ const AdminAwards = () => {
         }
       }
 
-      console.log('Awards saved successfully');
+      alert('Awards saved successfully!');
       navigate('/admin');
     } catch (error) {
       console.error('Error saving awards:', error);
@@ -118,7 +116,7 @@ const AdminAwards = () => {
     }
   };
 
-  if (loading) {
+  if (reviewsLoading || awardsLoading) {
     return (
       <>
         <Header />
