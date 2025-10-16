@@ -119,7 +119,7 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
                 : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
             } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <Heart className={`h-3 w-3 ${isLiked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} />
+            <Heart className={`h-3 w-3 transition-colors ${isLiked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} />
             {likes}
           </button>
           <span className="text-xs text-muted-foreground">
