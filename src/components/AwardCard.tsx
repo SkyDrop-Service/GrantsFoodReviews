@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, MapPin, DollarSign, Star, Heart } from "lucide-react";
 import { StarRating } from "./StarRating";
 import { FoodReview } from "@/types/food-review";
+import { useLikes } from "@/hooks/useLikes";
 import { openInMaps } from "@/utils/maps";
 
 interface Award {
@@ -20,6 +21,8 @@ interface AwardCardProps {
 }
 
 export const AwardCard = ({ award, isExpanded, onClick }: AwardCardProps) => {
+  const { likes, isLiked, loading, toggleLike } = useLikes(award.winner.id);
+
   return (
     <div className="relative w-full aspect-square perspective-1000">
       <div 
@@ -146,11 +149,24 @@ export const AwardCard = ({ award, isExpanded, onClick }: AwardCardProps) => {
               )}
 
               <div className="flex items-center gap-2">
-                <button className="flex items-center gap-1 px-2 py-1 rounded text-xs border bg-white text-gray-600 border-gray-300">
-                  <Heart className="h-3 w-3 text-gray-400" />
-                  0
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleLike();
+                  }}
+                  disabled={loading}
+                  className={`flex items-center gap-1 px-2 py-1 rounded text-xs border transition-colors ${
+                    isLiked 
+                      ? 'bg-red-50 text-red-600 border-red-300 hover:bg-red-100' 
+                      : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                  } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <Heart className={`h-3 w-3 ${isLiked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} />
+                  {likes}
                 </button>
-                <span className="text-xs text-muted-foreground">Like this review</span>
+                <span className="text-xs text-muted-foreground">
+                  {isLiked ? 'You liked this review' : 'Like this review'}
+                </span>
               </div>
 
               <div className="text-xs text-muted-foreground">
