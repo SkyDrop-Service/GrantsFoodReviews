@@ -5,6 +5,7 @@ import { MapPin, DollarSign, Star, Heart } from "lucide-react";
 import { StarRating } from "./StarRating";
 import { FoodReview } from "@/types/food-review";
 import { useAwards } from "@/hooks/useAwards";
+import { useLikes } from "@/hooks/useLikes";
 import { openInMaps } from "@/utils/maps";
 
 interface ReviewCardProps {
@@ -13,9 +14,8 @@ interface ReviewCardProps {
 
 export const ReviewCard = ({ review }: ReviewCardProps) => {
   const { awards: awardTypes } = useAwards();
-  const [likes, setLikes] = useState(0);
+  const { likes, isLiked, loading, toggleLike } = useLikes(review.id);
 
-  // Get award titles for this review
   const reviewAwards = review.awards?.map(awardId => {
     const awardType = awardTypes.find(award => award.id === awardId);
     return awardType?.title;
@@ -24,7 +24,6 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader className="pb-4">
-        {/* Award Winner Badges */}
         {reviewAwards.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
             {reviewAwards.map((awardTitle, index) => (
@@ -112,13 +111,20 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
 
         <div className="flex items-center gap-2">
           <button 
-            onClick={() => setLikes(prev => prev + 1)}
-            className="flex items-center gap-1 px-2 py-1 rounded text-xs border bg-white text-gray-600 border-gray-300 hover:bg-gray-50 transition-colors"
+            onClick={toggleLike}
+            disabled={loading}
+            className={`flex items-center gap-1 px-2 py-1 rounded text-xs border transition-colors ${
+              isLiked 
+                ? 'bg-red-50 text-red-600 border-red-300 hover:bg-red-100' 
+                : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <Heart className="h-3 w-3 text-gray-400" />
+            <Heart className={`h-3 w-3 ${isLiked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} />
             {likes}
           </button>
-          <span className="text-xs text-muted-foreground">Like this review</span>
+          <span className="text-xs text-muted-foreground">
+            {isLiked ? 'You liked this review' : 'Like this review'}
+          </span>
         </div>
 
         <div className="text-xs text-muted-foreground">
